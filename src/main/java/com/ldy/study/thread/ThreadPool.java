@@ -3,7 +3,6 @@ package com.ldy.study.thread;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 线程池
@@ -33,9 +32,7 @@ public class ThreadPool {
     public void submit(Runnable task){
         Worker worker = new Worker(task);
         Thread t = worker.thread;
-        if (!t.isAlive()){
-            t.start();
-        }
+
     }
 
     public static ThreadPool newThreadPool (int sum){
@@ -83,25 +80,14 @@ public class ThreadPool {
 
         /**
          * 释放锁到底是什么操作？
+         *
          */
-        Object lock1 = new Object();
-        Object lock2 = new Object();
-        Thread t1= new Thread(new Task(lock1,lock2));
-        Thread t2 = new Thread(new Task2(lock1,lock2));
-        t1.start();
-        t2.start();
-        try{
-            Thread.sleep(1000);
-        }catch(Exception e ){
-
-        }
-        System.out.println("t1"+t1.getState());
-        System.out.println("t2"+t2.getState());
-
-        t1.interrupt();
-        t2.interrupt();
-        System.out.println("t1"+t1.getState());
-        System.out.println("t2"+t2.getState());
+       Thread t = new Thread(new Task3());
+       t.start();
+       System.out.println(" main start to interupt ");
+       System.out.println(t.isInterrupted());
+      while(true)
+      t.interrupt();
 
     }
 
@@ -138,6 +124,28 @@ class Task2 implements Runnable{
             synchronized (lock1){
                 System.out.println(Thread.currentThread().getName()+"获取到lock1的锁");
             }
+        }
+    }
+}
+
+
+
+class Task3 implements Runnable{
+    Object lock1;
+    Object lock2;
+
+    @Override
+    public void run() {
+       try{
+           Thread.sleep(10000);
+       }catch(InterruptedException e){
+           System.out.println("interupt sleep");
+       }
+        System.out.println("start to wait");
+        try{
+            Thread.sleep(100000);
+        }catch(InterruptedException e){
+            System.out.println("interupt wait +"+Thread.interrupted());
         }
     }
 }
