@@ -3,93 +3,28 @@ package com.ldy.study.thread;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 线程池
  */
 public class ThreadPool {
-    private List<Thread> threads = new ArrayList<>();
-    private List<Runnable> tasks;
-    class Worker implements Runnable{
-        Thread thread;
-        private Runnable task;
-        public Worker(Runnable task){
-            Thread thread = new Thread(this);
-            this.thread=thread;
-            this.task = task;
+
+    public static void main(String[] args) throws Exception{
+        ExecutorService service = Executors.newFixedThreadPool(5);
+        CountDownLatch latch = new CountDownLatch(5);
+        for (int i = 0;i<10;i++){
+            service.submit(new TaskPool(0,latch));
         }
-        @Override
-        public void run() {
-            System.out.println(Thread.currentThread().getName());
-            runWork();
-        }
-        public void runWork(){
-            task.run();
-        }
+        latch.await();
+        service.shutdownNow();
 
     }
 
-    public void submit(Runnable task){
-        Worker worker = new Worker(task);
-        Thread t = worker.thread;
 
-    }
-
-    public static ThreadPool newThreadPool (int sum){
-        return new ThreadPool(sum);
-    }
-    private ThreadPool(int sum){
-        if (sum <0 || sum>6)
-            throw new RuntimeException("线程数目不合法");
-        for (int i =0;i<sum;i++){
-            threads.add(new Thread("thread"+i));
-        }
-    }
-    public void doRun(Runnable task){
-        if (task == null){
-            throw new RuntimeException("获取任务为空");
-        }
-        if (!threads.isEmpty()){
-           task.run();
-        }
-    }
-
-    public static void main(String[] args) {
-
-//       Task task = new Task();
-//        ThreadPool pool = newThreadPool(5);
-//        pool.submit(task);
-
-        /**
-         * 如果一个线程执行完成后，并且处于Terminated状态，再次start时会报错
-
-        Thread t= new Thread(new Task());
-        t.start();
-        while (t.isAlive()){
-            System.out.println(t.getState());
-        }
-        System.out.println("end "+t.getName() +" "+t.getState());
-        System.out.println("第二次启动");
-        t.start();
-        while (t.isAlive()){
-            System.out.println(t.getState());
-        }
-        System.out.println("end "+t.getName() +" "+t.getState());
-         */
-
-
-        /**
-         * 释放锁到底是什么操作？
-         *
-         */
-       Thread t = new Thread(new Task3());
-       t.start();
-       System.out.println(" main start to interupt ");
-       System.out.println(t.isInterrupted());
-      while(true)
-      t.interrupt();
-
-    }
 
 
 
@@ -98,6 +33,27 @@ public class ThreadPool {
 
 
 }
+class TaskPool implements Runnable{
+    private Integer i;
+    private CountDownLatch latch;
+    public TaskPool(Integer i,CountDownLatch latch){
+     this.i = i;
+     this.latch = latch;
+    }
+    @Override
+    public void run() {
+        ThreadLocal<Integer> avg = new ThreadLocal();
+        avg.set(i);
+        ThreadLocal<String> tt = new ThreadLocal<>();
+        tt.set("name");
+        for (int i =0;i<100;i++){
+            avg.set(avg.get()+1);
+        }
+        System.out.println("current thread = "+Thread.currentThread()+" sum="+avg.get());
+        latch.countDown();
+    }
+}
+
 
 /**
  * 线程的两种实现方式，一种是通过继承thread类，这种方式相对来说比较单调，一般不会采用这种方式创建线程
