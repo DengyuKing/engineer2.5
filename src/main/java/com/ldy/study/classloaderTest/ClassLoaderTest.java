@@ -8,11 +8,12 @@ public class ClassLoaderTest {
 
     public static void main(String[] args) throws Exception {
         String path="./target/classes/com/ldy/study/classloaderTest";
-        LdyClassLoader cl = new LdyClassLoader("./target/classes/com/ldy/study/leetcode/Niuke.class");
-       Class c = Class.forName("Niuke.class",true,cl);
+        LdyClassLoader cl = new LdyClassLoader("./target/classes/com/ldy/study/ClassLoaderTest/Demo.class");
+//       Class c = Class.forName("com.ldy.study.leetcode.Niuke",true,cl);
+       Class clazz = cl.loadClass("com.ldy.study.classloaderTest.Demo");
 
 
-        System.out.println(c.getClassLoader());
+        System.out.println(clazz.getClassLoader());
         System.out.println(A.class.getClassLoader());
         System.out.println(B.class.getClassLoader());
 
@@ -27,17 +28,21 @@ class LdyClassLoader extends ClassLoader{
     public LdyClassLoader(String classPath){
         this.path = classPath;
     }
+
+
     @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
-            byte [] b ;
-            Class c = null;
-            b = getData();
-            if (b.length>0){
-               c= defineClass(name,b,0,b.length);
-               return c;
-            }
-        return null;
+    public Class<?> loadClass(String name) throws ClassNotFoundException {
+        System.out.println(Thread.currentThread()+" "+name);
+        byte [] b = getData();
+        if (findClass(name) == null){
+            super.loadClass(name);
+        }
+        //不用双亲委派模型，会出现各种个样的错误，理解这块内容还是需要把类加载的基本流程了解清楚！
+        Class c = defineClass(name,b,0,b.length);
+        return c;
+
     }
+
     private byte [] getData(){
         File f = new File(path);
         if (f.exists()){
@@ -45,8 +50,9 @@ class LdyClassLoader extends ClassLoader{
                 FileInputStream file = new FileInputStream(path);
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 byte[] buff = new byte[1024];
-                while (file.read(buff) != -1){
-                    out.write(buff);
+                int len = 0;
+                while ((len = file.read(buff)) != -1){
+                    out.write(buff,0,len);
                 }
                 return out.toByteArray();
 
