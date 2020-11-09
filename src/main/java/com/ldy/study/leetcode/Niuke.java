@@ -49,7 +49,7 @@ public class Niuke {
     }
 
     public static void main(String[] args) {
-        maxNum(8);
+
     }
 
 

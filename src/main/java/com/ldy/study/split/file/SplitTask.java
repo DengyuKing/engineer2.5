@@ -1,4 +1,13 @@
 package com.ldy.study.split.file;
 
-public class SplitTask {
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+
+public class SplitTask extends FutureTask {
+
+    public SplitTask(Callable callable) {
+        super(callable);
+    }
+
+
 }

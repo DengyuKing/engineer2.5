@@ -44,12 +44,12 @@ class MyThread extends Thread{
         while (true) {
             /**
                 //立即可见的
-            if (i < array.length && name.equals(array[i])) {
+            if (i < array.length && name.equals(array[i])) { // 读，
                 System.out.println(name);
             }
             synchronized (lock) {
 
-                i++;
+                i++;// 写
             }
              以上这种写法是错误的，因为当执行到name.equals(array[i])时，有可能其他线程修改了i的值，
              此时i可能会出现数组越界的风险。

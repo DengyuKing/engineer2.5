@@ -16,8 +16,23 @@ public class Test {
 //
 //        }
 
-        System.out.println(tryCatchTest("123")+"return");
-        System.out.println(tryCatchTest(null)+"return");
+//        System.out.println(tryCatchTest("123")+"return");
+//        System.out.println(tryCatchTest(null)+"return");
+
+//        String str ="12345";
+//        System.out.println(str.length());
+
+
+        String a = "a";
+        String b = "a";  //直接赋值的String串使用了缓存技术
+
+        String c = new String("a"); //new 关键字是直接在堆上分配的对象，
+        String d = new String("a");// == 比较的是引用类型的对象地址是否相等。
+        System.out.println(a == b);
+        System.out.println(a==c);
+        System.out.println(b==c);
+        System.out.println(c==d);
+
     }
 
 

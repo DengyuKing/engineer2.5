@@ -17,12 +17,15 @@ public class ThreadPool {
         ExecutorService service = Executors.newFixedThreadPool(5);
         CountDownLatch latch = new CountDownLatch(5);
         for (int i = 0;i<10;i++){
-            service.submit(new TaskPool(0,latch));
+            service.submit(new TaskPool());
         }
-        latch.await();
-        service.shutdownNow();
+
+        service.shutdown();
 
     }
+
+
+
 
 
 
@@ -34,23 +37,18 @@ public class ThreadPool {
 
 }
 class TaskPool implements Runnable{
-    private Integer i;
-    private CountDownLatch latch;
-    public TaskPool(Integer i,CountDownLatch latch){
-     this.i = i;
-     this.latch = latch;
-    }
+
     @Override
     public void run() {
-        ThreadLocal<Integer> avg = new ThreadLocal();
-        avg.set(i);
-        ThreadLocal<String> tt = new ThreadLocal<>();
-        tt.set("name");
-        for (int i =0;i<100;i++){
-            avg.set(avg.get()+1);
-        }
-        System.out.println("current thread = "+Thread.currentThread()+" sum="+avg.get());
-        latch.countDown();
+      while (true){
+          try {
+            System.out.println(Thread.currentThread());
+            // 中断,
+
+          }catch(Exception e ){
+
+          }
+      }
     }
 }
 
