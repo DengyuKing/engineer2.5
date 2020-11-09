@@ -1,6 +1,8 @@
 package com.ldy.study.thread;
 
-import java.util.concurrent.atomic.AtomicIntegerArray;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ThreadTest {
     /**
@@ -10,20 +12,26 @@ public class ThreadTest {
      * @param args
      */
     public static void main(String[] args) {
-        String [] array= new String[15];
-        for (int i = 0;i<15;i+=3){
-            array[i]="t2";
-            array[i+1]="t1";
-            array[i+2]="t3";
+        generate(5);
+    }
+
+    public static List<List<Integer>> generate(int numRows) {
+        //第N行应该有N个数
+        List<List<Integer>> list = new ArrayList();
+        for (int i = 1;i <= numRows;i++){
+            List<Integer> li = new ArrayList();
+            for (int j = 0;j<i;j++){
+                if (j ==0 || j == i-1){
+                    li.add(1);
+                }else {
+                    int tmp = list.get(i-2).get(j-1)+list.get(i-2).get(j);
+                    li.add(tmp);
+                }
+
+            }
+            list.add(li);
         }
-
-        MyThread t1 = new MyThread(array,0,"t1");
-        MyThread t2 = new MyThread(array,0,"t2");
-        MyThread t3 = new MyThread(array,0,"t3");
-        t1.start();
-        t2.start();
-        t3.start();
-
+        return list;
 
     }
 
