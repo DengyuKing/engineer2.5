@@ -1,14 +1,8 @@
 package com.ldy.study.classloaderTest;
 
-import com.sun.org.apache.bcel.internal.util.ClassPath;
-import sun.net.www.http.HttpClient;
-
 import java.io.*;
 import java.lang.reflect.Constructor;
-import java.net.URLClassLoader;
-import java.util.Arrays;
 import java.util.Properties;
-import java.util.concurrent.ExecutionException;
 
 public class ClassLoaderTest {
 
@@ -17,7 +11,7 @@ public class ClassLoaderTest {
         ClassLoaderTest test = new ClassLoaderTest();
         MyClassLoader ldy = new MyClassLoader() ;
         // 获取其他路径的类名时，找不到资源
-        Class demo = ldy.loadClass("com.ldy.study.thread.AlibabaThreadTest");
+        Class demo = ldy.loadClass("com.ldy.study.thrump.AlibabaThreadTest");
         Constructor c = demo.getDeclaredConstructor();
         c.setAccessible(true);
 
